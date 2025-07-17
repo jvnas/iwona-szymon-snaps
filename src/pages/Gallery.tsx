@@ -1,7 +1,7 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { RefreshCw, Download } from 'lucide-react';
+import { RefreshCw, Download, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface Photo {
@@ -14,6 +14,9 @@ interface Photo {
 const Gallery = () => {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
 
   const loadPhotos = () => {
     setIsRefreshing(true);
@@ -37,11 +40,56 @@ const Gallery = () => {
     const imageCount = photos.filter(p => p.type === 'image').length;
     const videoCount = photos.filter(p => p.type === 'video').length;
     
-    if (imageCount === 0 && videoCount === 0) return '0 materia��ów';
+    if (imageCount === 0 && videoCount === 0) return '0 materiałów';
     if (imageCount === 0) return `${videoCount} ${videoCount === 1 ? 'film' : videoCount < 5 ? 'filmy' : 'filmów'}`;
     if (videoCount === 0) return `${imageCount} ${imageCount === 1 ? 'zdjęcie' : imageCount < 5 ? 'zdjęcia' : 'zdjęć'}`;
     
     return `${imageCount} ${imageCount === 1 ? 'zdjęcie' : imageCount < 5 ? 'zdjęcia' : 'zdjęć'} i ${videoCount} ${videoCount === 1 ? 'film' : videoCount < 5 ? 'filmy' : 'filmów'}`;
+  };
+
+  const openPhoto = (index: number) => {
+    setSelectedPhotoIndex(index);
+  };
+
+  const closePhoto = () => {
+    setSelectedPhotoIndex(null);
+  };
+
+  const goToNextPhoto = () => {
+    if (selectedPhotoIndex !== null) {
+      setSelectedPhotoIndex((prevIndex) => (prevIndex + 1) % photos.length);
+    }
+  };
+
+  const goToPrevPhoto = () => {
+    if (selectedPhotoIndex !== null) {
+      setSelectedPhotoIndex((prevIndex) => (prevIndex - 1 + photos.length) % photos.length);
+    }
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX.current - touchEndX.current > 50) { // Swiped left
+      goToNextPhoto();
+    } else if (touchEndX.current - touchStartX.current > 50) { // Swiped right
+      goToPrevPhoto();
+    }
+  };
+
+  const downloadPhoto = (photo: Photo) => {
+    const link = document.createElement('a');
+    link.href = photo.url;
+    link.download = `wspomnienie-${photo.timestamp}.${photo.type === 'video' ? 'mp4' : 'png'}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -102,10 +150,11 @@ const Gallery = () => {
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-            {photos.map((photo) => (
+            {photos.map((photo, index) => (
               <div
                 key={photo.id}
-                className="group aspect-square bg-gray-200 rounded-lg overflow-hidden shadow-md relative"
+                className="group aspect-square bg-gray-200 rounded-lg overflow-hidden shadow-md relative cursor-pointer"
+                onClick={() => openPhoto(index)}
               >
                 {photo.type === 'video' ? (
                   <>
@@ -127,13 +176,7 @@ const Gallery = () => {
                     loading="lazy"
                   />
                 )}
-                <a
-                  href={photo.url}
-                  download={`wspomnienie-${photo.timestamp}.${photo.type === 'video' ? 'mp4' : 'png'}`}
-                  className="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 md:opacity-100 transition-opacity"
-                >
-                  <Download className="w-5 h-5" />
-                </a>
+                {/* Download button removed from grid item, moved to full-screen view */}
               </div>
             ))}
           </div>
@@ -147,6 +190,60 @@ const Gallery = () => {
             <span className="text-2xl">+</span>
           </Button>
         </Link>
+      )}
+
+      {/* Full-screen Photo Viewer Modal */}
+      {selectedPhotoIndex !== null && photos[selectedPhotoIndex] && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50"
+          <Button 
+            onClick={closePhoto} 
+            className="absolute top-4 right-4 bg-white bg-opacity-20 hover:bg-opacity-40 text-white rounded-full p-2 z-60 pointer-events-auto"
+            size="icon"
+          >
+            <X className="w-6 h-6" />
+          </Button>
+
+          <Button 
+            onClick={goToPrevPhoto} 
+            className="absolute left-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-40 text-white rounded-full p-2 pointer-events-auto z-51"
+            size="icon"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </Button>
+          <Button 
+            onClick={goToNextPhoto} 
+            className="absolute right-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-40 text-white rounded-full p-2 pointer-events-auto z-51"
+            size="icon"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </Button>
+
+          <div className="relative w-full h-full flex items-center justify-center pointer-events-none">
+            {photos[selectedPhotoIndex].type === 'video' ? (
+              <video
+                src={photos[selectedPhotoIndex].url}
+                className="max-w-full max-h-full object-contain"
+                controls
+                autoPlay
+              />
+            ) : (
+              <img
+                src={photos[selectedPhotoIndex].url}
+                alt="Pełnoekranowe wspomnienie"
+                className="max-w-full max-h-full object-contain"
+              />
+            )}
+          </div>
+
+          <Button 
+            onClick={() => downloadPhoto(photos[selectedPhotoIndex])} 
+            className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white bg-opacity-20 hover:bg-opacity-40 text-white rounded-full p-2"
+            size="icon"
+          >
+            <Download className="w-6 h-6" />
+          </Button>
+        </div>
       )}
     </div>
   );

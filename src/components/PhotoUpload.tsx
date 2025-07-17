@@ -127,7 +127,7 @@ const PhotoUpload = ({ onUploadSuccess }: PhotoUploadProps) => {
         multiple
         onChange={handlePhotoUpload}
         className="hidden"
-        capture="environment"
+        
       />
       
       <Button
