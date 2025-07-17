@@ -9,7 +9,7 @@ const Index = () => {
     <div className="min-h-screen relative flex flex-col">
       {/* Background Image with Overlay */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        className="absolute inset-0 bg-cover bg-left-center md:bg-center bg-no-repeat"
         style={{
           backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url('/lovable-uploads/85aca688-f9be-4daf-abb2-5224c3f9fe4a.png')`
         }}
