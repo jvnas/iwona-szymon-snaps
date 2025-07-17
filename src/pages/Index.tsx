@@ -32,7 +32,7 @@ const Index = () => {
           
           <p className="text-gray-600 text-base md:text-lg mb-10 leading-relaxed max-w-xl mx-auto">
             Dziękujemy, że jesteście z nami! Pomóżcie nam stworzyć najpiękniejszy album. 
-            Dodajcie swoje zdjęcia z dzisiejszego dnia.
+            Dodajcie swoje zdjęcia i filmy z dzisiejszego dnia.
           </p>
           
           {/* Upload Component */}

@@ -8,6 +8,7 @@ interface Photo {
   id: string;
   url: string;
   timestamp: number;
+  type: 'image' | 'video';
 }
 
 const Gallery = () => {
@@ -33,6 +34,17 @@ const Gallery = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const getItemCount = () => {
+    const imageCount = photos.filter(p => p.type === 'image').length;
+    const videoCount = photos.filter(p => p.type === 'video').length;
+    
+    if (imageCount === 0 && videoCount === 0) return '0 materiałów';
+    if (imageCount === 0) return `${videoCount} ${videoCount === 1 ? 'film' : videoCount < 5 ? 'filmy' : 'filmów'}`;
+    if (videoCount === 0) return `${imageCount} ${imageCount === 1 ? 'zdjęcie' : imageCount < 5 ? 'zdjęcia' : 'zdjęć'}`;
+    
+    return `${imageCount} ${imageCount === 1 ? 'zdjęcie' : imageCount < 5 ? 'zdjęcia' : 'zdjęć'} i ${videoCount} ${videoCount === 1 ? 'film' : videoCount < 5 ? 'filmy' : 'filmów'}`;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
       {/* Header */}
@@ -44,7 +56,7 @@ const Gallery = () => {
                 Nasze Wspomnienia
               </h1>
               <p className="text-gray-600 mt-1">
-                {photos.length} {photos.length === 1 ? 'zdjęcie' : photos.length < 5 ? 'zdjęcia' : 'zdjęć'}
+                {getItemCount()}
               </p>
             </div>
             <div className="flex gap-3">
@@ -78,14 +90,14 @@ const Gallery = () => {
           <div className="text-center py-16">
             <div className="text-6xl mb-4">📸</div>
             <h2 className="text-xl font-serif text-gray-700 mb-2">
-              Jeszcze nie ma zdjęć
+              Jeszcze nie ma materiałów
             </h2>
             <p className="text-gray-600 mb-6">
               Bądź pierwszy i dodaj swoje wspomnienia z tego wyjątkowego dnia!
             </p>
             <Link to="/">
               <Button className="bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 text-white px-8 py-3 rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300">
-                Dodaj Pierwsze Zdjęcie
+                Dodaj Pierwsze Zdjęcie lub Film
               </Button>
             </Link>
           </div>
@@ -94,14 +106,28 @@ const Gallery = () => {
             {photos.map((photo) => (
               <div
                 key={photo.id}
-                className="aspect-square bg-gray-200 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
+                className="aspect-square bg-gray-200 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 relative"
               >
-                <img
-                  src={photo.url}
-                  alt="Wspomnienie z wesela"
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
+                {photo.type === 'video' ? (
+                  <>
+                    <video
+                      src={photo.url}
+                      className="w-full h-full object-cover"
+                      controls
+                      preload="metadata"
+                    />
+                    <div className="absolute top-2 right-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-xs">
+                      📹 Film
+                    </div>
+                  </>
+                ) : (
+                  <img
+                    src={photo.url}
+                    alt="Wspomnienie z wesela"
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                )}
               </div>
             ))}
           </div>

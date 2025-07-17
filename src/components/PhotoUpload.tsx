@@ -7,6 +7,7 @@ interface Photo {
   id: string;
   url: string;
   timestamp: number;
+  type: 'image' | 'video';
 }
 
 const PhotoUpload = () => {
@@ -34,7 +35,8 @@ const PhotoUpload = () => {
             const newPhoto: Photo = {
               id: Date.now().toString() + i,
               url: reader.result as string,
-              timestamp: Date.now()
+              timestamp: Date.now(),
+              type: file.type.startsWith('video/') ? 'video' : 'image'
             };
             photos.push(newPhoto);
             resolve(true);
@@ -75,10 +77,10 @@ const PhotoUpload = () => {
           Dziękujemy!
         </h3>
         <p className="text-gray-600 mb-4">
-          Twoje zdjęcia zostały dodane do galerii
+          Twoje zdjęcia i filmy zostały dodane do galerii
         </p>
         <div className="text-sm text-gray-500">
-          Możesz dodać więcej zdjęć lub przejść do galerii
+          Możesz dodać więcej materiałów lub przejść do galerii
         </div>
       </div>
     );
@@ -89,7 +91,7 @@ const PhotoUpload = () => {
       <input
         ref={fileInputRef}
         type="file"
-        accept="image/*"
+        accept="image/*,video/*"
         multiple
         onChange={handlePhotoUpload}
         className="hidden"
@@ -109,13 +111,13 @@ const PhotoUpload = () => {
         ) : (
           <>
             <Camera className="w-6 h-6 mr-3" />
-            Dodaj Zdjęcia Teraz
+            Dodaj Zdjęcia i Filmy
           </>
         )}
       </Button>
       
       <p className="text-gray-600 mt-4 text-sm max-w-sm mx-auto">
-        Możesz wybrać jedno lub więcej zdjęć naraz. Bez rejestracji, bez logowania.
+        Możesz wybrać zdjęcia i filmy naraz. Bez rejestracji, bez logowania.
       </p>
     </div>
   );
