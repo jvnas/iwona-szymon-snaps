@@ -1,7 +1,9 @@
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Upload, Camera, Check } from 'lucide-react';
+import { Upload, Camera, Heart, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import confetti from 'canvas-confetti';
 
 interface Photo {
   id: string;
@@ -10,10 +12,24 @@ interface Photo {
   type: 'image' | 'video';
 }
 
-const PhotoUpload = () => {
+interface PhotoUploadProps {
+  onUploadSuccess: () => void;
+}
+
+const PhotoUpload = ({ onUploadSuccess }: PhotoUploadProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (uploadSuccess) {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+    }
+  }, [uploadSuccess]);
 
   const handlePhotoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -28,7 +44,6 @@ const PhotoUpload = () => {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         
-        // Konwersja na base64 dla prostoty (w prawdziwej aplikacji użyłbyś storage cloud)
         const reader = new FileReader();
         await new Promise((resolve) => {
           reader.onload = () => {
@@ -48,13 +63,7 @@ const PhotoUpload = () => {
       localStorage.setItem('wedding-photos', JSON.stringify(photos));
       
       setUploadSuccess(true);
-      setTimeout(() => {
-        setUploadSuccess(false);
-        // Reset input
-        if (fileInputRef.current) {
-          fileInputRef.current.value = '';
-        }
-      }, 3000);
+      onUploadSuccess();
 
     } catch (error) {
       console.error('Error uploading photos:', error);
@@ -67,20 +76,43 @@ const PhotoUpload = () => {
     fileInputRef.current?.click();
   };
 
+  const handleAddMore = () => {
+    setUploadSuccess(false);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+    triggerFileInput();
+  }
+
   if (uploadSuccess) {
     return (
       <div className="text-center py-8 px-6 bg-white rounded-2xl shadow-xl border border-green-100">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
-          <Check className="w-8 h-8 text-green-600" />
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-rose-100 rounded-full mb-4">
+          <Heart className="w-8 h-8 text-rose-500" />
         </div>
         <h3 className="text-xl font-serif text-gray-800 mb-2">
-          Dziękujemy!
+          Super, mamy to!
         </h3>
         <p className="text-gray-600 mb-4">
-          Twoje zdjęcia i filmy zostały dodane do galerii
+          Twoje zdjęcia i filmy są już w galerii.
         </p>
-        <div className="text-sm text-gray-500">
-          Możesz dodać więcej materiałów lub przejść do galerii
+        <p className="text-sm text-gray-500 mb-6">
+          Możesz wrzucać dalej albo przeglądać fotki, które dodali inni! 🎉
+        </p>
+        <div className="flex justify-center gap-4">
+          <Button 
+            onClick={handleAddMore} 
+            variant="outline"
+            className="border-yellow-600 text-yellow-700 hover:bg-yellow-50 bg-white bg-opacity-90"
+          >
+            Dodaj więcej
+          </Button>
+          <Link to="/gallery">
+            <Button className="bg-yellow-600 hover:bg-yellow-700 text-white">
+              Zobacz galerię
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </Link>
         </div>
       </div>
     );
@@ -101,7 +133,8 @@ const PhotoUpload = () => {
       <Button
         onClick={triggerFileInput}
         disabled={isUploading}
-        className="bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 text-white px-12 py-6 text-lg font-medium rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+        variant="outline"
+        className="border-yellow-600 text-yellow-700 hover:bg-yellow-50 bg-white bg-opacity-90 px-12 py-6 text-lg font-medium rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isUploading ? (
           <>
@@ -116,9 +149,6 @@ const PhotoUpload = () => {
         )}
       </Button>
       
-      <p className="text-gray-600 mt-4 text-sm max-w-sm mx-auto">
-        Możesz wybrać zdjęcia i filmy naraz. Bez rejestracji, bez logowania.
-      </p>
     </div>
   );
 };

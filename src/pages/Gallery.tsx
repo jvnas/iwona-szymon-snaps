@@ -17,19 +17,18 @@ const Gallery = () => {
 
   const loadPhotos = () => {
     setIsRefreshing(true);
-    // Symulacja ładowania zdjęć z localStorage
     const savedPhotos = localStorage.getItem('wedding-photos');
     if (savedPhotos) {
       const parsedPhotos = JSON.parse(savedPhotos);
-      // Sortowanie od najnowszych do najstarszych
       setPhotos(parsedPhotos.sort((a: Photo, b: Photo) => b.timestamp - a.timestamp));
+    } else {
+      setPhotos([]);
     }
     setTimeout(() => setIsRefreshing(false), 500);
   };
 
   useEffect(() => {
     loadPhotos();
-    // Auto-refresh co 10 sekund
     const interval = setInterval(loadPhotos, 10000);
     return () => clearInterval(interval);
   }, []);
@@ -53,7 +52,7 @@ const Gallery = () => {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl md:text-3xl font-serif text-gray-800">
-                Nasze Wspomnienia
+                Miłość w każdym kadrze
               </h1>
               <p className="text-gray-600 mt-1">
                 {getItemCount()}

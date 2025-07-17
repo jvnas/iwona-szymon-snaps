@@ -1,15 +1,22 @@
 
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import PhotoUpload from '@/components/PhotoUpload';
 import { Heart, ArrowRight } from 'lucide-react';
 
 const Index = () => {
+  const [showGalleryButton, setShowGalleryButton] = useState(true);
+
+  const handleUploadSuccess = () => {
+    setShowGalleryButton(false);
+  };
+
   return (
     <div className="min-h-screen relative flex flex-col">
       {/* Background Image with Overlay */}
       <div 
-        className="absolute inset-0 bg-cover bg-left-center md:bg-center bg-no-repeat"
+        className="absolute inset-0 bg-cover bg-[65%_center] md:bg-center bg-no-repeat"
         style={{
           backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url('/lovable-uploads/85aca688-f9be-4daf-abb2-5224c3f9fe4a.png')`
         }}
@@ -29,13 +36,13 @@ const Index = () => {
           </div>
           
           {/* Date */}
-          <div className="text-yellow-700 font-medium text-lg mb-4">
+          <div className="text-yellow-700 font-serif font-medium text-2xl mb-4">
             14 sierpnia 2025
           </div>
           
           {/* Subtitle */}
           <h2 className="text-xl md:text-2xl font-serif text-gray-700 mb-3 leading-relaxed">
-            Nasze Wspomnienia
+            Miłość w każdym kadrze
           </h2>
           
           <p className="text-gray-600 text-base md:text-lg mb-10 leading-relaxed max-w-xl mx-auto bg-white bg-opacity-80 rounded-lg p-4">
@@ -45,19 +52,20 @@ const Index = () => {
           
           {/* Upload Component */}
           <div className="mb-8">
-            <PhotoUpload />
+            <PhotoUpload onUploadSuccess={handleUploadSuccess} />
           </div>
           
-          {/* Link to Gallery */}
-          <Link to="/gallery">
-            <Button 
-              variant="outline" 
-              className="border-yellow-600 text-yellow-700 hover:bg-yellow-50 px-6 py-3 rounded-full font-medium transition-all duration-300 hover:scale-105 bg-white bg-opacity-90"
-            >
-              Zobacz Galerię
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
-          </Link>
+          {showGalleryButton && (
+            <Link to="/gallery">
+              <Button 
+                variant="outline" 
+                className="border-yellow-600 text-yellow-700 hover:bg-yellow-50 px-6 py-3 rounded-full font-medium transition-all duration-300 hover:scale-105 bg-white bg-opacity-90"
+              >
+                Zobacz Galerię
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
       
@@ -70,7 +78,12 @@ const Index = () => {
       
       {/* Footer */}
       <footer className="relative z-10 text-center py-6 text-gray-600 text-sm bg-white bg-opacity-80">
-        <p>Z miłością dla naszych najbliższych 💕</p>
+        <p>Najlepsze chwile z najważniejszymi ludźmi ❤️</p>
+        <div className="mt-2">
+          <Link to="/admin" className="text-xs text-gray-500 hover:text-gray-700">
+            Panel Administratora
+          </Link>
+        </div>
       </footer>
     </div>
   );
