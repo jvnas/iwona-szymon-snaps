@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, Download } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface Photo {
@@ -37,7 +37,7 @@ const Gallery = () => {
     const imageCount = photos.filter(p => p.type === 'image').length;
     const videoCount = photos.filter(p => p.type === 'video').length;
     
-    if (imageCount === 0 && videoCount === 0) return '0 materiałów';
+    if (imageCount === 0 && videoCount === 0) return '0 materia��ów';
     if (imageCount === 0) return `${videoCount} ${videoCount === 1 ? 'film' : videoCount < 5 ? 'filmy' : 'filmów'}`;
     if (videoCount === 0) return `${imageCount} ${imageCount === 1 ? 'zdjęcie' : imageCount < 5 ? 'zdjęcia' : 'zdjęć'}`;
     
@@ -105,7 +105,7 @@ const Gallery = () => {
             {photos.map((photo) => (
               <div
                 key={photo.id}
-                className="aspect-square bg-gray-200 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 relative"
+                className="group aspect-square bg-gray-200 rounded-lg overflow-hidden shadow-md relative"
               >
                 {photo.type === 'video' ? (
                   <>
@@ -127,6 +127,13 @@ const Gallery = () => {
                     loading="lazy"
                   />
                 )}
+                <a
+                  href={photo.url}
+                  download={`wspomnienie-${photo.timestamp}.${photo.type === 'video' ? 'mp4' : 'png'}`}
+                  className="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 md:opacity-100 transition-opacity"
+                >
+                  <Download className="w-5 h-5" />
+                </a>
               </div>
             ))}
           </div>

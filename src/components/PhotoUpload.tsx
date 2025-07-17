@@ -134,7 +134,7 @@ const PhotoUpload = ({ onUploadSuccess }: PhotoUploadProps) => {
         onClick={triggerFileInput}
         disabled={isUploading}
         variant="outline"
-        className="border-yellow-600 text-yellow-700 hover:bg-yellow-50 bg-white bg-opacity-90 px-12 py-6 text-lg font-medium rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="border-yellow-600 text-yellow-700 hover:bg-stone-100 bg-white bg-opacity-90 px-12 py-6 text-lg font-medium rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isUploading ? (
           <>

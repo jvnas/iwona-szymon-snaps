@@ -59,7 +59,7 @@ const Index = () => {
             <Link to="/gallery">
               <Button 
                 variant="outline" 
-                className="border-yellow-600 text-yellow-700 hover:bg-yellow-50 px-6 py-3 rounded-full font-medium transition-all duration-300 hover:scale-105 bg-white bg-opacity-90"
+                className="border-yellow-600 text-yellow-700 hover:bg-stone-100 px-6 py-3 rounded-full font-medium transition-all duration-300 hover:scale-105 bg-white bg-opacity-90"
               >
                 Zobacz Galerię
                 <ArrowRight className="w-4 h-4 ml-2" />
