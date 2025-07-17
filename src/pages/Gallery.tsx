@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 interface Photo {
   id: string;
   url: string;
-  timestamp: number;
+  created_at: number;
   type: 'image' | 'video';
 }
 
@@ -18,16 +18,21 @@ const Gallery = () => {
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
 
-  const loadPhotos = () => {
+  const loadPhotos = async () => {
     setIsRefreshing(true);
-    const savedPhotos = localStorage.getItem('wedding-photos');
-    if (savedPhotos) {
-      const parsedPhotos = JSON.parse(savedPhotos);
-      setPhotos(parsedPhotos.sort((a: Photo, b: Photo) => b.timestamp - a.timestamp));
-    } else {
+    try {
+      const response = await fetch('/api/photos');
+      if (!response.ok) {
+        throw new Error(`Failed to fetch photos: ${response.statusText}`);
+      }
+      const data: Photo[] = await response.json();
+      setPhotos(data);
+    } catch (error) {
+      console.error('Error loading photos:', error);
       setPhotos([]);
+    } finally {
+      setTimeout(() => setIsRefreshing(false), 500);
     }
-    setTimeout(() => setIsRefreshing(false), 500);
   };
 
   useEffect(() => {
@@ -86,7 +91,7 @@ const Gallery = () => {
   const downloadPhoto = (photo: Photo) => {
     const link = document.createElement('a');
     link.href = photo.url;
-    link.download = `wspomnienie-${photo.timestamp}.${photo.type === 'video' ? 'mp4' : 'png'}`;
+    link.download = `wspomnienie-${photo.created_at}.${photo.type === 'video' ? 'mp4' : 'png'}`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -227,12 +232,18 @@ const Gallery = () => {
                 className="max-w-full max-h-full object-contain"
                 controls
                 autoPlay
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
               />
             ) : (
               <img
                 src={photos[selectedPhotoIndex].url}
                 alt="Pełnoekranowe wspomnienie"
                 className="max-w-full max-h-full object-contain"
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
               />
             )}
           </div>

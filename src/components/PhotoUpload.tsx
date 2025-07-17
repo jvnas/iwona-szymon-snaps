@@ -38,35 +38,27 @@ const PhotoUpload = ({ onUploadSuccess }: PhotoUploadProps) => {
     setIsUploading(true);
 
     try {
-      const existingPhotos = localStorage.getItem('wedding-photos');
-      const photos: Photo[] = existingPhotos ? JSON.parse(existingPhotos) : [];
-
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        
-        const reader = new FileReader();
-        await new Promise((resolve) => {
-          reader.onload = () => {
-            const newPhoto: Photo = {
-              id: Date.now().toString() + i,
-              url: reader.result as string,
-              timestamp: Date.now(),
-              type: file.type.startsWith('video/') ? 'video' : 'image'
-            };
-            photos.push(newPhoto);
-            resolve(true);
-          };
-          reader.readAsDataURL(file);
-        });
-      }
+        const formData = new FormData();
+        formData.append('file', file);
 
-      localStorage.setItem('wedding-photos', JSON.stringify(photos));
+        const response = await fetch('/api/photos', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error(`Upload failed: ${response.statusText}`);
+        }
+      }
       
       setUploadSuccess(true);
       onUploadSuccess();
 
     } catch (error) {
       console.error('Error uploading photos:', error);
+      alert('Wystąpił błąd podczas przesyłania zdjęć. Spróbuj ponownie.');
     } finally {
       setIsUploading(false);
     }
