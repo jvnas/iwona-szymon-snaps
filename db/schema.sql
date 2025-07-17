@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS photos (
+  id TEXT PRIMARY KEY,
+  url TEXT NOT NULL,
+  created_at INTEGER NOT NULL,
+  type TEXT NOT NULL
+);

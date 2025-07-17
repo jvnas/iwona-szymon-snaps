@@ -54,7 +54,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
 
       // Save metadata to D1
       await env.MY_DATABASE.prepare(
-        'INSERT INTO photos (id, url, timestamp, type) VALUES (?, ?, ?, ?)'
+        'INSERT INTO photos (id, url, created_at, type) VALUES (?, ?, ?, ?)'
       ).bind(fileId, publicUrl, Date.now(), contentType.startsWith('video/') ? 'video' : 'image').run();
 
       return new Response(JSON.stringify({ id: fileId, url: publicUrl }), {
