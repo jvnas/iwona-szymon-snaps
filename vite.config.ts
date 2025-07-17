@@ -4,8 +4,11 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
-  base: mode === 'production' ? "/iwona-szymon-snaps/" : "/", // Base path for GitHub Pages in production only
+export default defineConfig(({ mode, command }) => ({
+  // For Cloudflare Pages, we don't need a base path
+  // For GitHub Pages, we need the repository name as the base path
+  // For local development, we use the root path
+  base: mode === 'production' && process.env.CF_PAGES ? '/' : mode === 'production' ? "/iwona-szymon-snaps/" : "/",
   server: {
     host: "::",
     port: 8080,

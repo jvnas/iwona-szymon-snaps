@@ -4,3 +4,9 @@ publish = "dist"
 
 [site]
 bucket = "dist"
+
+[env.production]
+# Produkcyjne ustawienia
+
+[env.development]
+# Ustawienia deweloperskie
