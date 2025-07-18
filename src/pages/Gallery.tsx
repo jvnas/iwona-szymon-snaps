@@ -21,12 +21,23 @@ const Gallery = () => {
   const loadPhotos = async () => {
     setIsRefreshing(true);
     try {
-      const response = await fetch('/api/photos');
-      if (!response.ok) {
-        throw new Error(`Failed to fetch photos: ${response.statusText}`);
+      // Sprawdzenie czy jesteśmy w środowisku lokalnym
+      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      
+      if (isLocal) {
+        // W środowisku lokalnym pobieramy zdjęcia z localStorage
+        const localPhotosData = localStorage.getItem('localPhotos');
+        const localPhotos = localPhotosData ? JSON.parse(localPhotosData) : [];
+        setPhotos(localPhotos);
+      } else {
+        // Na produkcji pobieramy z prawdziwego API
+        const response = await fetch('/api/photos');
+        if (!response.ok) {
+          throw new Error(`Failed to fetch photos: ${response.statusText}`);
+        }
+        const data: Photo[] = await response.json();
+        setPhotos(data);
       }
-      const data: Photo[] = await response.json();
-      setPhotos(data);
     } catch (error) {
       console.error('Error loading photos:', error);
       setPhotos([]);

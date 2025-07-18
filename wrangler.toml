@@ -1,22 +1,15 @@
-[build]
-command = "npm install && npm run build"
+name = "iwona-szymon-snaps"
+main = "src/functions/api/[[path]].ts"
+compatibility_date = "2023-07-18"
 
-# Specify the directory to deploy
 [site]
-site_name = "iwona-szymon-snaps"
-pages_build_output_dir = "dist"
+bucket = "dist"
 
-# Environment variables
-[env.production]
+[[d1_databases]]
+binding = "MY_DATABASE"
+database_name = "my-wedding-db"
+database_id = "c3750e55-38c4-4ac1-ba60-7b66f81705ad"
 
-[r2_buckets]
-binding = "MY_BUCKET" # Nazwa zmiennej, której będziesz używać w kodzie Worker
-bucket_name = "my-wedding-photos" # Nazwa Twojego bucketu R2 w Cloudflare
-
-[d1_databases]
-binding = "MY_DATABASE" # Nazwa zmiennej, której będziesz używać w kodzie Worker
-database_name = "my-wedding-db" # Nazwa Twojej bazy danych D1 w Cloudflare
-database_id = "c3750e55-38c4-4ac1-ba60-7b66f81705ad" # ID Twojej bazy danych D1 (znajdziesz w panelu Cloudflare)
-migrations_dir = "db" # Katalog zawierający pliki migracji D1
-
-[env.development]
+[[r2_buckets]]
+binding = "MY_BUCKET"
+bucket_name = "my-wedding-photos"
