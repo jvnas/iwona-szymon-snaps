@@ -1,1 +1,12 @@
 .env
+node_modules
+dist
+.DS_Store
+*.local
+.wrangler
+.dev.vars
+.idea
+.vscode
+.cache
+*.log
+.eslintcache
