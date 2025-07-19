@@ -16,3 +16,4 @@ database_id = "c3750e55-38c4-4ac1-ba60-7b66f81705ad"
 [[r2_buckets]]
 binding = "MY_BUCKET"
 bucket_name = "my-wedding-photos"
+public_access = true
