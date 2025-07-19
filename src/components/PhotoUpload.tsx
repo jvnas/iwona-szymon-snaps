@@ -258,7 +258,7 @@ const PhotoUpload = ({ onUploadSuccess }: PhotoUploadProps) => {
           </Button>
         </div>
       ) : (
-        <div className="border-2 border-dashed border-yellow-400 rounded-2xl p-8 bg-yellow-50">
+        <div className="border-2 border-dashed border-yellow-400 rounded-2xl p-8 bg-white/80">
            <Upload className="w-12 h-12 mb-4 mx-auto text-yellow-600" />
            <p className="text-lg font-semibold mb-2 text-gray-800">Podziel się wspomnieniami</p>
            <p className="text-sm text-gray-600 mb-6">Dodaj zdjęcia i filmy z tego wyjątkowego dnia.</p>
