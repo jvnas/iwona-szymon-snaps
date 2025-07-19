@@ -35,6 +35,7 @@ const Index = () => {
         <h2 className="text-xl md:text-2xl font-serif text-black drop-shadow-md">
           Podziel się wspomnieniami
         </h2>
+        </div>
           
           <p className="text-gray-600 text-base md:text-lg mb-10 leading-relaxed max-w-xl mx-auto bg-white bg-opacity-80 rounded-lg p-4">
             Dziękujemy, że jesteście z nami! Pomóżcie nam stworzyć najpiękniejszy album. 
