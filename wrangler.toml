@@ -1,9 +1,12 @@
 name = "iwona-szymon-snaps"
-main = "src/functions/api/[[path]].ts"
+pages_build_output_dir = "dist"
 compatibility_date = "2023-07-18"
 
-[site]
-bucket = "dist"
+[vars]
+# TODO: Zastąp ten URL publicznym adresem URL Twojego zasobnika R2
+# Możesz go znaleźć w panelu Cloudflare -> R2 -> my-wedding-photos -> Settings
+# Powinien wyglądać podobnie do: https://pub-xxxxxxxx.r2.dev
+PUBLIC_R2_URL = "https://pub-7e2fa433665848febdcd4a46ecf533c1.r2.dev"
 
 [[d1_databases]]
 binding = "MY_DATABASE"
@@ -13,3 +16,4 @@ database_id = "c3750e55-38c4-4ac1-ba60-7b66f81705ad"
 [[r2_buckets]]
 binding = "MY_BUCKET"
 bucket_name = "my-wedding-photos"
+public_access = true
