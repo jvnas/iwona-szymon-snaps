@@ -30,20 +30,11 @@ const Index = () => {
           <div className="flex items-center justify-center mb-6">
             <Heart className="w-8 h-8 text-yellow-600 mr-3 animate-pulse" />
             <h1 className="text-4xl md:text-5xl font-serif text-white drop-shadow-md mb-2">
-              Iwona & Szymon
-            </h1>
-            <Heart className="w-8 h-8 text-yellow-600 ml-3 animate-pulse" />
-          </div>
-          
-          {/* Date */}
-          <div className="text-yellow-700 font-serif font-medium text-2xl mb-4">
-            14 sierpnia 2025
-          </div>
-          
-          {/* Subtitle */}
-          <h2 className="text-xl md:text-2xl font-serif text-white/90 drop-shadow-md">
-            Miłość w każdym kadrze
-          </h2>
+          Iwona & Szymon
+        </h1>
+        <h2 className="text-xl md:text-2xl font-serif text-white drop-shadow-md">
+          Podziel się wspomnieniami
+        </h2>
           
           <p className="text-gray-600 text-base md:text-lg mb-10 leading-relaxed max-w-xl mx-auto bg-white bg-opacity-80 rounded-lg p-4">
             Dziękujemy, że jesteście z nami! Pomóżcie nam stworzyć najpiękniejszy album. 
