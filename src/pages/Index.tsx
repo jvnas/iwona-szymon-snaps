@@ -29,7 +29,7 @@ const Index = () => {
           {/* Header with Hearts */}
           <div className="flex items-center justify-center mb-6">
             <Heart className="w-8 h-8 text-yellow-600 mr-3 animate-pulse" />
-            <h1 className="text-4xl md:text-5xl font-serif text-white/90 drop-shadow-md mb-2">
+            <h1 className="text-4xl md:text-5xl font-serif text-white drop-shadow-md mb-2">
               Iwona & Szymon
             </h1>
             <Heart className="w-8 h-8 text-yellow-600 ml-3 animate-pulse" />
@@ -41,7 +41,7 @@ const Index = () => {
           </div>
           
           {/* Subtitle */}
-          <h2 className="text-xl md:text-2xl font-serif text-gray-700 mb-3 leading-relaxed">
+          <h2 className="text-xl md:text-2xl font-serif text-white/90 drop-shadow-md">
             Miłość w każdym kadrze
           </h2>
           
