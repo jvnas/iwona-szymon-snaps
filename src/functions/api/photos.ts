@@ -78,6 +78,36 @@ const apiRouter = {
       }
     }
 
+    if (request.method === 'DELETE' && url.pathname.startsWith('/api/photos/')) {
+      try {
+        const photoId = url.pathname.split('/').pop();
+        if (!photoId) {
+          return addCorsHeaders(new Response(JSON.stringify({ error: 'Photo ID missing' }), { status: 400 }));
+        }
+
+        // Get photo details from D1 to find the R2 object key
+        const { results } = await env.MY_DATABASE.prepare('SELECT url FROM photos WHERE id = ?').bind(photoId).all<{ url: string }>();
+        if (!results || results.length === 0) {
+          return addCorsHeaders(new Response(JSON.stringify({ error: 'Photo not found' }), { status: 404 }));
+        }
+
+        const photoUrl = results[0].url;
+        const objectKey = photoUrl.substring(photoUrl.lastIndexOf('/') + 1);
+
+        // Delete from R2
+        await env.MY_BUCKET.delete(objectKey);
+
+        // Delete from D1
+        await env.MY_DATABASE.prepare('DELETE FROM photos WHERE id = ?').bind(photoId).run();
+
+        return addCorsHeaders(new Response(JSON.stringify({ message: 'Photo deleted successfully' }), { status: 200 }));
+
+      } catch (e) {
+        log('Delete Error:', e);
+        return addCorsHeaders(new Response(JSON.stringify({ error: 'Delete failed' }), { status: 500 }));
+      }
+    }
+
     return addCorsHeaders(new Response(JSON.stringify({ error: 'API route not found' }), { status: 404 }));
   }
 };

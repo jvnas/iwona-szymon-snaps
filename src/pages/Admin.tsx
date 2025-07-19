@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Trash2, Shield } from 'lucide-react';
+import { useToast } from '@/components/ui/use-toast';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,7 +18,7 @@ import {
 interface Photo {
   id: string;
   url: string;
-  timestamp: number;
+  created_at: number;
   type: 'image' | 'video';
 }
 
@@ -26,14 +27,19 @@ const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [photoToDelete, setPhotoToDelete] = useState<string | null>(null);
+  const { toast } = useToast();
 
-  const loadPhotos = () => {
-    const savedPhotos = localStorage.getItem('wedding-photos');
-    if (savedPhotos) {
-      const parsedPhotos = JSON.parse(savedPhotos);
-      setPhotos(parsedPhotos.sort((a: Photo, b: Photo) => b.timestamp - a.timestamp));
-    } else {
-      setPhotos([]);
+  const loadPhotos = async () => {
+    try {
+      const response = await fetch('/api/photos');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data: Photo[] = await response.json();
+      setPhotos(data.sort((a, b) => b.created_at - a.created_at));
+    } catch (error) {
+      console.error("Failed to fetch photos:", error);
+      // Optionally, show a toast notification here
     }
   };
 
@@ -57,13 +63,29 @@ const Admin = () => {
     setPassword('');
   };
 
-  const handleDeleteConfirmation = (id: string) => {
-    const savedPhotos = localStorage.getItem('wedding-photos');
-    if (!savedPhotos) return;
-    const photosFromStorage: Photo[] = JSON.parse(savedPhotos);
-    const updatedPhotos = photosFromStorage.filter(p => p.id !== id);
-    localStorage.setItem('wedding-photos', JSON.stringify(updatedPhotos));
-    setPhotos(updatedPhotos);
+  const handleDeletePhoto = async (id: string) => {
+    try {
+      const response = await fetch(`/api/photos/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      setPhotos(prevPhotos => prevPhotos.filter(photo => photo.id !== id));
+      toast({
+        title: "Sukces",
+        description: "Zdjęcie zostało pomyślnie usunięte.",
+      });
+    } catch (error) {
+      console.error("Failed to delete photo:", error);
+      toast({
+        title: "Błąd",
+        description: "Nie udało się usunąć zdjęcia.",
+        variant: "destructive",
+      });
+    }
   };
 
   if (!isAuthenticated) {
@@ -139,7 +161,7 @@ const Admin = () => {
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Anuluj</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => handleDeleteConfirmation(photo.id)}>
+                    <AlertDialogAction onClick={() => handleDeletePhoto(photo.id)}>
                       Tak, usuń
                     </AlertDialogAction>
                   </AlertDialogFooter>
