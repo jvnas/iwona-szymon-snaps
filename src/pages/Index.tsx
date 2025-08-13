@@ -75,12 +75,23 @@ const Index = () => {
       </div>
 
       {/* Footer */}
-      <footer className="relative z-10 text-center py-6 text-gray-600 text-sm bg-white bg-opacity-80">
-        <p>Najlepsze chwile z najważniejszymi ludźmi ❤️</p>
-        <div className="mt-2">
-          <Link to="/admin" className="text-xs text-gray-500 hover:text-gray-700">
-            Panel Administratora
-          </Link>
+      <footer className="relative z-10 text-center py-8 text-gray-600 text-sm bg-white bg-opacity-90 mt-auto">
+        <div className="max-w-4xl mx-auto px-4">
+          <p className="font-serif text-lg mb-4">Najlepsze chwile z najważniejszymi ludźmi ❤️</p>
+          <div className="border-t border-gray-200 pt-6">
+            <h3 className="font-bold text-gray-700 mb-2">Masz problem z dodaniem plików?</h3>
+            <p className="mb-4">Jeśli pliki są zbyt duże lub wystąpił inny błąd, skorzystaj z opcji awaryjnej.</p>
+            <a href="https://padlet.com/mjvnas/i-s-oa49tjmh3a0pf7u9" target="_blank" rel="noopener noreferrer">
+              <Button variant="outline">
+                  Dodawanie awaryjne
+              </Button>
+            </a>
+          </div>
+          <div className="mt-6 border-t border-gray-200 pt-4">
+            <Link to="/admin" className="text-xs text-gray-500 hover:text-gray-700">
+              Panel Administratora
+            </Link>
+          </div>
         </div>
       </footer>
     </div>
